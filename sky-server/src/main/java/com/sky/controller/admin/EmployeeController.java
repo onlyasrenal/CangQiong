@@ -4,6 +4,7 @@ import com.sky.constant.JwtClaimsConstant;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
+import com.sky.dto.PasswordEditDTO;
 import com.sky.entity.Employee;
 import com.sky.properties.JwtProperties;
 import com.sky.result.PageResult;
@@ -92,11 +93,67 @@ public class EmployeeController {
         return Result.success();
     }
 
+    /**
+     * 分页查询
+     * @param employeePageQueryDTO
+     * @return
+     */
     @GetMapping("/page")
     public Result<PageResult> page(EmployeePageQueryDTO employeePageQueryDTO){
         log.info("员工分页查询,参数为{}",  employeePageQueryDTO);
         PageResult pageResult = employeeService.pageQuery(employeePageQueryDTO);
         return Result.success(pageResult);
+    }
+
+    /**
+     *  启用禁用员工账号
+     * @param status
+     * @param id
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation( "启用禁用员工账号")
+    public Result startOrStop(@PathVariable Integer status, Long id){
+        log.info("员工状态：{}", status);
+        log.info("员工id：{}", id);
+        employeeService.startOrStop(status, id);
+        return Result.success();
+    }
+
+    /**
+     *  根据id查询员工信息
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    @ApiOperation( "根据id查询员工信息")
+    public Result<Employee> findById(@PathVariable long id){
+        Employee employee = employeeService.findById(id);
+        return Result.success(employee);
+    }
+
+    /**
+     * 修改员工信息
+     * @param employeeDTO
+     * @return
+     */
+    @PutMapping
+    @ApiOperation( "修改员工信息")
+    public Result update(@RequestBody EmployeeDTO employeeDTO){
+         employeeService.update(employeeDTO);
+         return Result.success();
+    }
+
+    /**
+     * 修改员工密码
+     * @param passwordEditDTO
+     * @return
+     */
+    @PutMapping("/editPassword")
+    @ApiOperation( "修改员工密码")
+    public Result updatePassword(@RequestBody PasswordEditDTO passwordEditDTO){
+        employeeService.updatePassword(passwordEditDTO);
+        return Result.success();
     }
 
 }
